@@ -33,10 +33,8 @@ object AccountOperations {
   def initialDeposit[T: Transaction](amount: Amount, account: T): T =
     implicitly[Transaction[T]].credit(amount, account)
 
-
   def credit[T: Transaction](amount: Amount, account: T): T =
     implicitly[Transaction[T]].credit(amount, account)
-
 
   def debit[T: Transaction](amount: Amount, account: T): T =
     implicitly[Transaction[T]].debit(amount, account)
@@ -47,13 +45,13 @@ object AccountOperations {
     implicitly[Transaction[T]].transfer(account1, account2, amount)
 
   case class NewAccountRequest(
-    accountName: String,
-    accountNumber: Int,
-    holderId: Int,
-    holderFirstName: String,
-    holderLastName: String,
-    holderAddress: String,
-    accountType: String
-)
+      accountName: String,
+      accountNumber: Int,
+      holderId: Int,
+      holderFirstName: String,
+      holderLastName: String,
+      holderAddress: String,
+      accountType: String
+  )
 
 }

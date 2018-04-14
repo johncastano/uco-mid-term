@@ -1,11 +1,11 @@
 package uco.fp.banking.services
 
-import uco.fp.banking.domain.{Account, Active, Amount, NewAccount, Closed}
+import uco.fp.banking.domain.{ Account, Active, Amount, NewAccount, Closed }
 
 trait Transaction[T] {
-  def credit[A <: Amount](a: A, b:T): T
-  def debit[A <: Amount](a: A, b:T): T
-  def transfer[A <: Amount](a: T, b: T, c:A): T
+  def credit[A <: Amount](a: A, b: T): T
+  def debit[A <: Amount](a: A, b: T): T
+  def transfer[A <: Amount](a: T, b: T, c: A): T
 }
 
 object TransactionOps {
@@ -26,11 +26,10 @@ object TransactionOps {
       b.copy(balance = finalAmount)
     }
     def transfer[A <: Amount](a: Account[Active], b: Account[Active], c: A): Account[Active] = {
-      if(a.balance.value >= c.value) {
-        credit(c,b)
-        debit(c,a)
-      }
-      else
+      if (a.balance.value >= c.value) {
+        credit(c, b)
+        debit(c, a)
+      } else
         a
     }
   }
@@ -40,13 +39,13 @@ object TransactionOps {
       val oldAmount = b.balance.value
       b.copy(balance = b.balance.copy(value = oldAmount + a.value))
     }
-    def debit[A](a: A, b: Account[NewAccount]): Account[NewAccount] = b
+    def debit[A](a: A, b: Account[NewAccount]): Account[NewAccount]                            = b
     def transfer[A](a: Account[NewAccount], b: Account[NewAccount], c: A): Account[NewAccount] = a
   }
 
   implicit object ClosedAccountTransactions extends Transaction[Account[Closed]] {
-    def credit[A](a: A, b: Account[Closed]): Account[Closed] = b
-    def debit[A](a: A, b: Account[Closed]): Account[Closed] = b
+    def credit[A](a: A, b: Account[Closed]): Account[Closed]                                 = b
+    def debit[A](a: A, b: Account[Closed]): Account[Closed]                                  = b
     def transfer[A <: Amount](a: Account[Closed], b: Account[Closed], c: A): Account[Closed] = b
   }
 }
