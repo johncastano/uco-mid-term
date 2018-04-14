@@ -31,6 +31,16 @@ case object Checks extends AccountType
 case object Saving extends AccountType
 case object Fiduciary extends AccountType
 
+object AccountType {
+  def apply(value:String): AccountType = {
+    value.toLowerCase match {
+      case "checks"    => Checks
+      case "saving"    => Saving
+      case "fiduciary" => Fiduciary
+    }
+  }
+}
+
 case class AccountAddress(value: String)
 
 sealed trait AccountState
@@ -46,6 +56,7 @@ case class Account[S <: AccountState](
   accountHolder: AccountHolder,
   address: AccountAddress,
   openDate: LocalDate,
+  closedDate: Option[LocalDate] = None,
   `type`: AccountType,
   balance: Amount
 )
@@ -55,14 +66,12 @@ object Account {
   number: Int,
   accountHolder: AccountHolder,
   address: AccountAddress,
-  openDate: LocalDate,
-  closedDate: Option[LocalDate] = None,
   `type`: AccountType,
   balance: Amount,
 ): Either[DomainError, Account[NewAccount]] = {
     for {
       accountName <- validateName(name)
-    } yield new Account(accountName, number, accountHolder, address, openDate, `type`, balance)
+    } yield new Account(accountName, number, accountHolder, address, LocalDate.now, None, `type`, balance)
   }
   private[this] def validateName(field: String): Either[DomainError, String] = {
     if(field.matches("^[a-zA-Z]+$"))
